@@ -15,7 +15,7 @@ var DeltaTime float32
 
 //jkjk
 type Game interface {
-	Start()
+	//Start()
 	Update()
 }
 
@@ -25,13 +25,13 @@ type GameFixedUpdate interface {
 
 //run
 func Run(g Game) {
-	g.Start()
+	//g.Start()
 	g.Update()
-	if c, ok := g.(GameFixedUpdate); ok {
+	/*if c, ok := g.(GameFixedUpdate); ok {
 		c.FixedUpdate()
 	}
 
-	/*if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
+	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
 	}
 	defer sdl.Quit()
