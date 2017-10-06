@@ -1,112 +1,78 @@
 package gogame
 
-import "fmt"
-
-//import "github.com/veandco/go-sdl2/sdl"
+import (
+	"github.com/gogame/gogame/video"
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 //delta
 var DeltaTime float32
 
-//game
-//type Game struct {
-//	deltaTime float32
-//
-
-//hjjkh
-//type GameFunc func()
-
-//jkjk
-/*type Game interface {
-	//Start()
-	Update()
-}
-
-type GameFixedUpdate interface {
-	FixedUpdate()
-}*/
-
-//
 type Starter interface {
 	Start()
 }
 
-//
 type Updater interface {
 	Update()
 }
 
-//u
-type UpdaterFunc func()
+type FixedUpdater interface {
+	Update()
+}
 
-//a
-func (f UpdaterFunc) Update() {
-	if f != nil {
-		f()
+func RunGame(u Updater) {
+	if s, ok := u.(Starter); ok {
+		s.Start()
 	}
+	u.Update()
 }
 
-//a
-type Game struct {
-	Start       func()
-	Update      Updater
-	FixedUpdate func()
-}
+//fenetre = pygame.display.set_mode((640,480), RESIZABLE)
 
-//a
-type StarterFunc func()
+// love.window.setMode( width, height, flags ) //fulscrene, resisable, etc..
 
-//a
-func (f StarterFunc) Start() {
-	f()
-}
+//glview = GLViewImpl::createWithRect("SimpleGame", Rect(0,0, 480, 320), 1.0);
+/*Size designSize = Size(480,320);
+Size resourceSize = Size(960,640);
 
-//a
+director->setContentScaleFactor(resourceSize.height / designSize.height);
+director->getOpenGLView()->setDesignResolutionSize(
+  designSize.width, designSize.height, ResolutionPolicy::FIXED_HEIGHT);
 
-//todo: renomer methods en updater
-/*func Run(u GameUpdateFunc) {
-	g := &Game{Methods: u}
-	g.Run()
-}*/
+   graphics = new GraphicsDeviceManager(this);
+        graphics.PreferredBackBufferHeight = 600;
+		graphics.PreferredBackBufferWidth = 800;
 
-// Run is a simple method when only Start and Update are needed
-func Run(start, update func()) {
-	g := &Game{Start: start, Update: UpdaterFunc(update)}
-	g.Run()
-}
+		 graphics.IsFullScreen = userRequestedFullScreen;
+            graphics.PreferredBackBufferHeight = userRequestedHeight;
+            graphics.PreferredBackBufferWidth = userRequestedWidth;
+            graphics.ApplyChanges();
 
-/*
-//
-func Run(u Updater) {
-	g := &Game{Updater: u}
-	g.Run()
-}
 
-//
-func RunFunc(u func()) {
-	Run(UpdaterFunc(u))
-}
 */
-//
-
-//run
-func (g *Game) Run() {
-
-	//g.Start()
-	if g.Start != nil {
-		g.Start()
+//todo make common functions for both run functions
+func Run(start, update func()) {
+	vid := video.ActiveDevice
+	vid.Start()
+	if start != nil {
+		start()
 	}
-	fmt.Printf("%v %T\n", g.Update, g.Update)
-	if g.Update != nil {
-		fmt.Println("not nil")
-		g.Update()
-	} else {
-		fmt.Println("nil")
+	//todo timed update loop
+	update()
+	vid.Update()
+	for i := 0; i < 2500; i++ {
+		sdl.PumpEvents()
+		sdl.Delay(1)
 	}
+	vid.Exit()
+}
 
-	/*if c, ok := g.(GameFixedUpdate); ok {
-		c.FixedUpdate()
-	}
-
+/*func Run(u Updater) {
+if s, ok := u.(Starter); ok {
+	s.Start()
+}
+u.Update()*/
+/*
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
 	}
@@ -129,4 +95,4 @@ func (g *Game) Run() {
 	window.UpdateSurface()
 
 	sdl.Delay(2500)*/
-}
+//}
