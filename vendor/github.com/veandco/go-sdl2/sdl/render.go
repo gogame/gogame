@@ -1,7 +1,19 @@
 package sdl
 
-// #include "sdl_wrapper.h"
+/*
+#include "sdl_wrapper.h"
+
+#if !(SDL_VERSION_ATLEAST(2,0,1))
+#pragma message("SDL_UpdateYUVTexture is not supported before SDL 2.0.1")
+static inline int SDL_UpdateYUVTexture(SDL_Texture* texture, const SDL_Rect* rect, const Uint8* Yplane, int Ypitch, const Uint8* Uplane, int Upitch, const Uint8* Vplane, int Vpitch)
+{
+	return -1;
+}
+#endif
+
+*/
 import "C"
+import "reflect"
 import "unsafe"
 
 const (
@@ -116,22 +128,23 @@ func (window *Window) GetRenderer() (*Renderer, error) {
 }
 
 // Renderer (https://wiki.libsdl.org/SDL_GetRendererInfo)
-func (renderer *Renderer) GetRendererInfo(info *RendererInfo) error {
+func (renderer *Renderer) GetInfo() (RendererInfo, error) {
 	var cinfo cRendererInfo
+	var info RendererInfo
 	ret := int(C.SDL_GetRendererInfo(renderer.cptr(), cinfo.cptr()))
 	if ret < 0 {
-		return GetError()
+		return info, GetError()
 	}
 
 	info.RendererInfoData = cinfo.RendererInfoData
 	// No need to free, it's done by DestroyRenderer
 	info.Name = C.GoString(cinfo.Name)
 
-	return nil
+	return info, nil
 }
 
 // Renderer (https://wiki.libsdl.org/SDL_GetRendererOutputSize)
-func (renderer *Renderer) GetRendererOutputSize() (w, h int, err error) {
+func (renderer *Renderer) GetOutputSize() (w, h int, err error) {
 	_w := (*C.int)(unsafe.Pointer(&w))
 	_h := (*C.int)(unsafe.Pointer(&h))
 	_ret := C.SDL_GetRendererOutputSize(renderer.cptr(), _w, _h)
@@ -228,9 +241,25 @@ func (texture *Texture) GetBlendMode() (bm BlendMode, err error) {
 }
 
 // Texture (https://wiki.libsdl.org/SDL_UpdateTexture)
-func (texture *Texture) Update(rect *Rect, pixels unsafe.Pointer, pitch int) error {
+func (texture *Texture) Update(rect *Rect, pixels []byte, pitch int) error {
+	_pixels := unsafe.Pointer(&pixels[0])
 	_pitch := C.int(pitch)
-	_ret := C.SDL_UpdateTexture(texture.cptr(), rect.cptr(), pixels, _pitch)
+	_ret := C.SDL_UpdateTexture(texture.cptr(), rect.cptr(), _pixels, _pitch)
+	if _ret < 0 {
+		return GetError()
+	}
+	return nil
+}
+
+// Texture (https://wiki.libsdl.org/SDL_UpdateYUVTexture)
+func (texture *Texture) UpdateYUV(rect *Rect, yPlane []byte, yPitch int, uPlane []byte, uPitch int, vPlane []byte, vPitch int) error {
+	_yPlane := (*C.Uint8)(unsafe.Pointer(&yPlane[0]))
+	_yPitch := C.int(yPitch)
+	_uPlane := (*C.Uint8)(unsafe.Pointer(&uPlane[0]))
+	_uPitch := C.int(uPitch)
+	_vPlane := (*C.Uint8)(unsafe.Pointer(&vPlane[0]))
+	_vPitch := C.int(vPitch)
+	_ret := C.SDL_UpdateYUVTexture(texture.cptr(), rect.cptr(), _yPlane, _yPitch, _uPlane, _uPitch, _vPlane, _vPitch)
 	if _ret < 0 {
 		return GetError()
 	}
@@ -238,13 +267,34 @@ func (texture *Texture) Update(rect *Rect, pixels unsafe.Pointer, pitch int) err
 }
 
 // Texture (https://wiki.libsdl.org/SDL_LockTexture)
-func (texture *Texture) Lock(rect *Rect, pixels *unsafe.Pointer, pitch *int) error {
-	_pitch := (*C.int)(unsafe.Pointer(pitch))
-	_ret := C.SDL_LockTexture(texture.cptr(), rect.cptr(), pixels, _pitch)
+func (texture *Texture) Lock(rect *Rect) ([]byte, int, error) {
+	var _pitch C.int
+	var _pixels unsafe.Pointer
+	var b []byte
+	var length int
+
+	_ret := C.SDL_LockTexture(texture.cptr(), rect.cptr(), &_pixels, &_pitch)
 	if _ret < 0 {
-		return GetError()
+		return b, int(_pitch), GetError()
 	}
-	return nil
+
+	_, _, w, h, err := texture.Query()
+	if err != nil {
+		return b, int(_pitch), GetError()
+	}
+
+	pitch := int32(_pitch)
+	if rect != nil {
+		length = int((pitch / w) * rect.W * rect.H)
+	} else {
+		length = int(pitch * h)
+	}
+	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	sliceHeader.Cap = int(length)
+	sliceHeader.Len = int(length)
+	sliceHeader.Data = uintptr(_pixels)
+
+	return b, int(pitch), nil
 }
 
 // Texture (https://wiki.libsdl.org/SDL_UnlockTexture)
@@ -278,6 +328,14 @@ func (renderer *Renderer) SetLogicalSize(w int, h int) error {
 		return GetError()
 	}
 	return nil
+}
+
+// Renderer (https://wiki.libsdl.org/SDL_RenderGetLogicalSize)
+func (renderer *Renderer) GetLogicalSize() (w, h int) {
+	_w := (*C.int)(unsafe.Pointer(&w))
+	_h := (*C.int)(unsafe.Pointer(&h))
+	C.SDL_RenderGetLogicalSize(renderer.cptr(), _w, _h)
+	return
 }
 
 // Renderer (https://wiki.libsdl.org/SDL_RenderSetViewport)

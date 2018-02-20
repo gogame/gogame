@@ -4,12 +4,12 @@
 [[projects]]
   name = "github.com/veandco/go-sdl2"
   packages = ["sdl"]
-  revision = "fa5f69af0ee694152743b568cb66239a5cfda821"
-  version = "v0.1"
+  revision = "30f30965227962032c13bd0b12a89e6a5107c768"
+  version = "v0.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9287c79f69a249e284db3023618b8d39bd35b35483df9450326c2ece5b6be81b"
+  inputs-digest = "0b62d9d4a41df499ab35f104d28a0276a49c40af695c3eafa1590731ede75693"
   solver-name = "gps-cdcl"
   solver-version = 1
