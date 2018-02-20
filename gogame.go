@@ -26,7 +26,20 @@ func RunGame(u Updater) {
 	}
 	u.Update()
 }
+/*
+gogame.Game struct {
+	init func()
+	update() etc....
+}
 
+Mygame{
+	Game
+}
+///utilisation
+
+initialize fct with code: prototype usge before anything
+
+*/
 //fenetre = pygame.display.set_mode((640,480), RESIZABLE)
 
 // love.window.setMode( width, height, flags ) //fulscrene, resisable, etc..
