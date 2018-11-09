@@ -37,6 +37,41 @@ Mygame{
 }
 ///utilisation
 
+import (
+	"fmt"
+)
+
+
+type Game struct {
+	Update func()
+}
+
+func NewGame() *Game {
+	g := new(Game)
+	g.Update = g.DefaultUpdate
+	return g
+}
+
+func (g Game) DefaultUpdate() {
+	fmt.Println("Hello, Default")
+}
+
+func (g Game) Run() {
+	g.Update()
+}
+
+
+func main() {
+	g := NewGame()
+	g.Update = func() {
+		fmt.Println("Hello, Specific")
+		g.DefaultUpdate()
+	}
+	g.Run()
+	
+}
+-----
+
 gg.Update(func() void {
 
 })
