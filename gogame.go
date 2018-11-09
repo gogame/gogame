@@ -52,7 +52,7 @@ func NewGame() *Game {
 	return g
 }
 
-func (g Game) DefaultUpdate() {
+func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate()
 	fmt.Println("Hello, Default")
 }
 
