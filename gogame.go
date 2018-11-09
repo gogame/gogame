@@ -51,8 +51,8 @@ func NewGame() *Game {
 	g.Update = g.DefaultUpdate
 	return g
 }
-
-func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate()
+//!!! should be consistent; return * or not everywhere
+func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate() 
 	fmt.Println("Hello, Default")
 }
 
@@ -71,6 +71,45 @@ func main() {
 	
 }
 -----
+or
+-----
+type Game struct {
+	Update func()
+}
+func NewGame() Game {
+	g := Game{}
+	g.Update = g.DefaultUpdate
+	return g
+}
+func (g Game) DefaultUpdate() {
+	fmt.Println("Hello, Default")
+}
+func (g Game) Run() {
+	g.Update()
+}
+
+type MyGame struct {
+	Game
+}
+
+func NewMyGame() MyGame {
+	g := MyGame{Game: NewGame()}
+	
+	g.Game.Update = g.Update
+	return g
+}
+
+
+func (g MyGame) Update() {
+	fmt.Println("Hello, Specific")
+	g.DefaultUpdate()
+}
+
+func main() {
+	g := NewMyGame()
+	g.Run()
+}
+----
 
 gg.Update(func() void {
 
