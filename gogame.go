@@ -51,7 +51,7 @@ func NewGame() *Game {
 	g.Update = g.DefaultUpdate
 	return g
 }
-//!!! should be consistent; return * or not everywhere
+//!!! has to return pouinter if modifies the state on the Game
 func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate() 
 	fmt.Println("Hello, Default")
 }
