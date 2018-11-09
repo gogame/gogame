@@ -37,6 +37,10 @@ Mygame{
 }
 ///utilisation
 
+gg.Update(func() void {
+
+})
+
 initialize fct with code: prototype usge before anything
 
 */
