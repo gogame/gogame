@@ -7,6 +7,7 @@ import (
 	_ "image/png"
 	"os"
 
+	"github.com/gogame/gogame/graphics"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -33,20 +34,26 @@ func main() {
 		gg.Flip() ou SwapBuffer() ou trouver autre nom
 
 	*/
+	/*
+		if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
+			panic(err)
+		}
+		defer sdl.Quit()
 
-	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
-		panic(err)
-	}
-	defer sdl.Quit()
+		window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+			800, 600, sdl.WINDOW_SHOWN)
+		if err != nil {
+			panic(err)
+		}
+		defer window.Destroy()
 
-	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		800, 600, sdl.WINDOW_SHOWN)
-	if err != nil {
-		panic(err)
-	}
-	defer window.Destroy()
+		Render(), err := sdl.CreateRender()er(window, -1, sdl.RENDER()ER_ACCELERATED)
+		if err != nil {
+			panic(err)
+		}*/
 
-	render, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	gd, err := graphics.NewDevice()
+	defer gd.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +73,7 @@ func main() {
 	}*/
 	rect := sdl.Rect{0, 0, 200, 200}
 	/*surface.FillRect(&rect, 0xffff0000)
-	tex, err := render.CreateTextureFromSurface(surface)
+	tex, err := Render().CreateTextureFromSurface(surface)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +92,7 @@ func main() {
 	rect.W = int32(bounds.Max.X)
 	rect.H = int32(bounds.Max.Y)
 
-	tex, err := render.CreateTexture(uint32(sdl.PIXELFORMAT_RGBA32), sdl.TEXTUREACCESS_STATIC, rect.W, rect.H)
+	tex, err := gd.Render().CreateTexture(uint32(sdl.PIXELFORMAT_RGBA32), sdl.TEXTUREACCESS_STATIC, rect.W, rect.H)
 	if err != nil {
 		panic(err)
 	}
@@ -110,8 +117,8 @@ func main() {
 	tex.Update(&rect, rgba.Pix, rgba.Stride)
 	tex.SetBlendMode(sdl.BLENDMODE_BLEND)
 
-	render.SetDrawColor(39, 58, 93, 255)
-	render.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
+	//gd.Render().SetDrawColor(39, 58, 93, 255)
+	//gd.Render().SetDrawBlendMode(sdl.BLENDMODE_BLEND)
 
 	running := true
 	for running {
@@ -123,14 +130,14 @@ func main() {
 				break
 			}
 		}
-		render.Clear()
-		render.Copy(tex, &rect, &rect)
-		render.Present()
+		gd.Clear()
+		gd.Render().Copy(tex, &rect, &rect)
+		gd.Render().Present()
 	}
 
 	tex.Destroy()
-	render.Destroy()
-	window.Destroy()
+	//Render().Destroy()
+	//window.Destroy()
 }
 
 /*
@@ -175,6 +182,8 @@ func main() {
     b.TextureFct()
 }
 
+
+https://hunterloftis.github.io/2017/07/11/useful-constructors/
 https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
 https://gamedev.stackexchange.com/questions/151877/handling-variable-frame-rate-in-sdl2
 
