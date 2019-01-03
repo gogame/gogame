@@ -1,11 +1,23 @@
 package graphics
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"fmt"
+
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 type Device struct {
 	window *sdl.Window
 	render *sdl.Renderer
 	//	title string
+}
+
+type Config struct {
+	Title      string
+	Width      int
+	Height     int
+	Scale      int
+	Fullscreen bool
 }
 
 func init() {
@@ -21,10 +33,22 @@ func (d *Device) Render() *sdl.Renderer {
 
 //func Title(t string) (*Device) {return }
 
-func NewDevice() (d *Device, err error) {
+func NewDevice(c *Config) (d *Device, err error) {
 	d = &Device{}
-	d.window, err = sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		640, 360, sdl.WINDOW_SHOWN)
+	fmt.Printf("%v\n", c)
+	if c.Width == 0 || c.Height == 0 {
+		c.Width = 320
+		c.Height = 180
+		if c.Scale == 0 {
+			c.Scale = 2
+		}
+	}
+	if c.Scale == 0 {
+		c.Scale = 1
+	}
+	fmt.Printf("%v\n", c)
+	d.window, err = sdl.CreateWindow(c.Title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+		int32(c.Width*c.Scale), int32(c.Height*c.Scale), sdl.WINDOW_SHOWN)
 	if err == nil {
 		d.render, err = sdl.CreateRenderer(d.window, -1, sdl.RENDERER_ACCELERATED)
 	}

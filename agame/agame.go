@@ -7,6 +7,7 @@ import (
 	_ "image/png"
 	"os"
 
+	"github.com/gogame/gogame"
 	"github.com/gogame/gogame/graphics"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -17,8 +18,31 @@ import (
 fct: stateless
 method with value receiver: use state of struct but don't change it
 method with pointer receiver: use state of struct and change it
+
+pour chque paraemttre voir s'il est utilise à chaque appel ou pas
+si non => variable
+
+ne pas se baser sur xna
+api tres simple puis étendre
 */
+
 func main() {
+	//gogame.Run(update, gogame.Title("blabla"))
+	//
+	//illogic que title soit dans graphics config
+	gogame.Run(update, &graphics.Config{Title: "AGame"})
+	/*Width:  640,
+	Height: 360,
+	Title:  "bliblo"})*/
+}
+
+func update(g *gogame.Game) error {
+
+	g.Dump()
+	return nil
+}
+
+func toto() {
 	/*
 
 		init game size or use default values
@@ -52,7 +76,7 @@ func main() {
 			panic(err)
 		}*/
 
-	gd, err := graphics.NewDevice()
+	gd, err := graphics.NewDevice(nil)
 	defer gd.Close()
 	if err != nil {
 		panic(err)
@@ -88,7 +112,7 @@ func main() {
 		panic(err)
 	}
 	bounds := img.Bounds()
-	fmt.Println("%v\n", bounds)
+	fmt.Printf("%v\n", bounds)
 	rect.W = int32(bounds.Max.X)
 	rect.H = int32(bounds.Max.Y)
 

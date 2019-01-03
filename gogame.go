@@ -1,11 +1,30 @@
 package gogame
 
-import (
-	"github.com/gogame/gogame/video"
-	"github.com/veandco/go-sdl2/sdl"
-)
+//"github.com/gogame/gogame/video"
+
+/*func Load(name string) (interface{}, error) {
+	return
+}
+
+func Clear() {
+
+}
+
+func Draw(x int, y int, params ...interface{}) { //or pos Point, ...
+
+}
+
+func Play(s Sound, loops... bool) {//optional loop value
+
+}
+
+func Input(i input.Key) { //not key because also other stuff
+
+}
+*/
 
 //delta
+/*
 var DeltaTime float32
 
 type Starter interface {
@@ -25,7 +44,7 @@ func RunGame(u Updater) {
 		s.Start()
 	}
 	u.Update()
-}
+}*/
 /*
 gogame.Game struct {
 	init func()
@@ -52,7 +71,7 @@ func NewGame() *Game {
 	return g
 }
 //!!! has to return pouinter if modifies the state on the Game
-func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate() 
+func (g Game) DefaultUpdate() { // or BaseUpdate or func GameUpdate()
 	fmt.Println("Hello, Default")
 }
 
@@ -68,7 +87,7 @@ func main() {
 		g.DefaultUpdate()
 	}
 	g.Run()
-	
+
 }
 -----
 or
@@ -94,7 +113,7 @@ type MyGame struct {
 
 func NewMyGame() MyGame {
 	g := MyGame{Game: NewGame()}
-	
+
 	g.Game.Update = g.Update
 	return g
 }
@@ -142,7 +161,7 @@ director->getOpenGLView()->setDesignResolutionSize(
 
 */
 //todo make common functions for both run functions
-func Run(start, update func()) {
+/*func Run(start, update func()) {
 	vid := video.ActiveDevice
 	vid.Start()
 	if start != nil {
@@ -156,7 +175,7 @@ func Run(start, update func()) {
 		sdl.Delay(1)
 	}
 	vid.Exit()
-}
+}*/
 
 /*func Run(u Updater) {
 if s, ok := u.(Starter); ok {
