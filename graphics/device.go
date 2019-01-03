@@ -32,7 +32,7 @@ func (d *Device) Render() *sdl.Renderer {
 }
 
 //func Title(t string) (*Device) {return }
-
+//todo: implement fullscreen
 func NewDevice(c *Config) (d *Device, err error) {
 	d = &Device{}
 	fmt.Printf("%v\n", c)
@@ -46,13 +46,16 @@ func NewDevice(c *Config) (d *Device, err error) {
 	if c.Scale == 0 {
 		c.Scale = 1
 	}
-	fmt.Printf("%v\n", c)
+	w := int32(c.Width)
+	h := int32(c.Height)
+	s := int32(c.Scale)
 	d.window, err = sdl.CreateWindow(c.Title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		int32(c.Width*c.Scale), int32(c.Height*c.Scale), sdl.WINDOW_SHOWN)
+		w*s, h*s, sdl.WINDOW_SHOWN)
 	if err == nil {
 		d.render, err = sdl.CreateRenderer(d.window, -1, sdl.RENDERER_ACCELERATED)
 	}
 	if err == nil {
+		d.render.SetLogicalSize(w, h)
 		d.render.SetDrawColor(39, 58, 93, 255)
 		d.render.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
 	}

@@ -30,7 +30,15 @@ func main() {
 	//gogame.Run(update, gogame.Title("blabla"))
 	//
 	//illogic que title soit dans graphics config
-	gogame.Run(update, &graphics.Config{Title: "AGame"})
+
+	//g.Load mais besoin d'instance de Game
+	//besoin de ui avant load pour progress
+	///m ethod start? ou load
+	/*
+		gogame.Start(start) ou content.Load
+	*/
+
+	gogame.Run(update, &graphics.Config{Title: "AGame", Scale: 1})
 	/*Width:  640,
 	Height: 360,
 	Title:  "bliblo"})*/
@@ -39,10 +47,13 @@ func main() {
 func update(g *gogame.Game) error {
 
 	g.Dump()
+
+	toto(g.GraphicsDevice)
+
 	return nil
 }
 
-func toto() {
+func toto(gd *graphics.Device) {
 	/*
 
 		init game size or use default values
@@ -76,11 +87,11 @@ func toto() {
 			panic(err)
 		}*/
 
-	gd, err := graphics.NewDevice(nil)
+	/*gd, err := graphics.NewDevice(nil)
 	defer gd.Close()
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	/*surface, err := window.GetSurface()
 	if err != nil {

@@ -34,12 +34,16 @@ func (g *Game) Dump() {
 	return nil
 }*/
 
+// CallOne, CallRepeat
+//Start method
+
 func Run(update func(*Game) error, c *graphics.Config) error {
 	g := &Game{}
 	g.config = c
 	g.GraphicsDevice, _ = graphics.NewDevice(g.config)
 	//todo handle error
+	//load if something in load queue
 	update(g)
-	//todo user ticker to recall update
+	//todo use ticker to recall update
 	return nil
 }
