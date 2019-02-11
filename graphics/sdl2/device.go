@@ -4,9 +4,17 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
+//todo: remplacer par device car ne devrait pas être exporté
+//pourrais même etre placé dans un dossier internal
+//ou alors sdl2 au même niveau que graphics
+//open close device?
 type Device struct {
 	window *sdl.Window
 	render *sdl.Renderer
+}
+
+func NewDevice() (d Device, err error) {
+	return Device{}, nil
 }
 
 func (d Device) R() *sdl.Renderer {
